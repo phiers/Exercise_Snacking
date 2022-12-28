@@ -52,14 +52,6 @@ def test_no_category_input(connection, monkeypatch):
     assert get_category(connection, "question") == ""
 
 
-# def test_improper_category_input(connection, monkeypatch, capsys):
-#     seed_db(connection)
-#     monkeypatch.setattr("builtins.input", lambda _: "Baz")
-#     get_category(connection, "question")
-#     captured = capsys.readouterr()
-#     assert "valid" in captured.out.strip()
-
-
 def test_get_category_list_with_category(test_list):
     assert len(get_exercise_list_for_chosen_category("full", test_list)) == 2
 
