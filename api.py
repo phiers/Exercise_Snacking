@@ -10,18 +10,16 @@ class Exercise:
     rep_units: str
 
 
-con = sqlite3.connect(":memory:")
-
-
 def seed_db(db_conn):
     with db_conn:
         cur = db_conn.cursor()
-        cur.execute("""CREATE TABLE exercises
+        cur.execute(
+            """CREATE TABLE exercises
                     (name TEXT,
                     category TEXT, 
                     reps INTEGER,
                     rep_units TEXT)"""
-                    )
+        )
 
         data = [
             Exercise("Push-ups", "Upper body", "12", "each"),
@@ -38,10 +36,17 @@ def seed_db(db_conn):
             Exercise("Sun salutation B", "Mobility", "2", "each"),
         ]
         for item in data:
-            data_dict = {"name": item.name, "category": item.category, "reps": item.reps, "rep_units": item.rep_units}
-            cur.execute("INSERT INTO exercises VALUES(:name, :category, :reps, :rep_units)", data_dict)
-            
-        
+            data_dict = {
+                "name": item.name.title(),
+                "category": item.category.title(),
+                "reps": item.reps,
+                "rep_units": item.rep_units.title(),
+            }
+            cur.execute(
+                "INSERT INTO exercises VALUES(:name, :category, :reps, :rep_units)",
+                data_dict,
+            )
+
 
 def fetch_all(db_conn):
     with db_conn:
@@ -51,11 +56,13 @@ def fetch_all(db_conn):
 
 
 def fetch_categories(db_conn):
+    """Returns a set of categories from the database"""
     cur = db_conn.cursor()
     cur.execute("SELECT category FROM exercises")
     category_list = [cat for (cat,) in cur.fetchall()]
+    categories = set(category_list)
 
-    return category_list
+    return sorted(categories)
 
 
 def fetch_exercise_names(db_conn):
@@ -63,18 +70,26 @@ def fetch_exercise_names(db_conn):
     cur.execute("SELECT name FROM exercises")
     exercise_names_list = [name for (name,) in cur.fetchall()]
 
-    return exercise_names_list
+    return sorted(exercise_names_list)
 
 
 def create_exercise(db_conn, exercise):
+    """
+    ::param exercise:: a dictionary with keys name, category, reps, and rep_units
+    adds exercise to the database
+    returns None
+    """
     with db_conn:
         cur = db_conn.cursor()
-        data_dict = {"name": exercise.name.title(), "category": exercise.category.title(), "reps": exercise.reps, "rep_units": exercise.rep_units.title()}
-        cur.execute("INSERT INTO exercises VALUES(:name, :category, :reps, :rep_units)", data_dict)
+        cur.execute(
+            "INSERT INTO exercises VALUES(:name, :category, :reps, :rep_units)",
+            exercise,
+        )
 
 
 def delete_exercise(db_conn, exercise_name):
     with db_conn:
         cur = db_conn.cursor()
-        cur.execute("DELETE from exercises WHERE name = :name", {"name": exercise_name.title() })
-
+        cur.execute(
+            "DELETE from exercises WHERE name = :name", {"name": exercise_name.title()}
+        )
