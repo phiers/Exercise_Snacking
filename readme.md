@@ -1,5 +1,5 @@
 #  EXERCISE SNACK LIST GENERATOR
-#### Video Demo: URL (TO DO)
+#### Video Demo: URL https://youtu.be/q3zPHxHDu54
 
 #### Description:
 The Exercise Snack List Generator is a command line interface tool that does all of the following:
